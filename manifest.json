@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.w1ndys.pi-open-git-web",
+  "name": "在浏览器打开仓库",
+  "version": "0.1.0",
+  "author": "w1ndys",
+  "description": "读取当前仓库的 origin，在默认浏览器打开对应网页。",
+  "changelog": "Release 0.1.0：首个版本。命令 /gitweb 读取 origin 的原始 fetch 地址，规范成 http(s) 后用默认浏览器打开。",
+  "license": "MIT",
+  "homepage": "https://github.com/w1ndys/pi-open-git-web",
+  "main": "main.js",
+  "permissions": [
+    "shell.openExternal",
+    "notify"
+  ],
+  "engines": {
+    "piDesktop": ">=0.9.0"
+  },
+  "categories": [
+    "productivity",
+    "developer-tools"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "id": "gitweb",
+        "title": "在浏览器打开仓库",
+        "keywords": [
+          "git",
+          "origin",
+          "browser",
+          "web",
+          "github",
+          "gitlab",
+          "仓库",
+          "浏览器",
+          "远程",
+          "打开"
+        ],
+        "category": "Developer"
+      }
+    ]
+  },
+  "safetyNotes": "只读 origin 原始地址，规范成 http(s) 后用默认浏览器打开；不读 .git 目录，不写文件，不访问网络，不读写剪贴板；用户名和口令会在打开前去掉。",
+  "i18n": {
+    "en": {
+      "name": "Open repository in browser",
+      "description": "Read the current repository origin and open the corresponding page in the default browser.",
+      "safetyNotes": "Reads only the raw origin fetch URL, normalizes it to http(s), and opens it in the default browser. It does not read the .git directory, write files, use the network, or read or write the clipboard. Usernames and passwords are removed before opening."
+    },
+    "zh-CN": {
+      "name": "在浏览器打开仓库",
+      "description": "读取当前仓库的 origin，在默认浏览器打开对应网页。",
+      "safetyNotes": "只读 origin 原始地址，规范成 http(s) 后用默认浏览器打开；不读 .git 目录，不写文件，不访问网络，不读写剪贴板；用户名和口令会在打开前去掉。"
+    }
+  }
+}
