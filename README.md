@@ -32,6 +32,8 @@ npm run check
 
 只声明 `shell.openExternal` 和 `notify`。提示用 `pi.ui.showToast`。不声明 `clipboard.write`。
 
-## 发布
+## 市场
 
-本版尚未发布到插件市场。
+已上架：https://plugins.aiuo.net/plugins/io.github.w1ndys.pi-open-git-web
+
+在 PI-Desktop 的 **Plugins → Marketplace** 里搜「在浏览器打开仓库」即可安装。
