@@ -28,7 +28,7 @@ PI-Desktop 插件（`io.github.w1ndys.pi-open-git-web`）：读取当前工作�
 
 宿主没有「角落」槽位，每个插件都是自己往右下角画，所以位置靠一条跨插件约定协商：**凡是在右下角画常驻按钮的插件，都给按钮加属性 `data-pi-corner-button`**，这样同窗口里所有这类按钮会按 DOM 顺序从下往上排成一列，靠后的按下面几颗按钮的高度往上让位，谁都不压着谁。约定细节（间距 8px、按高度累加、隐藏的按钮跳过、只写自己的样式）见 `specs/corner-button/`。
 
-`pi-open-in-vscode` 的角落按钮也要跟上这条约定，两颗才不会叠在一起。
+`pi-open-in-vscode` 的角落按钮也要跟上这条约定，两颗才不会叠在一起。这条约定是临时的，根治要等宿主给 corner 槽位：[vastsa/PI-Desktop#1469](https://github.com/vastsa/PI-Desktop/issues/1469)。
 
 ## 行为
 

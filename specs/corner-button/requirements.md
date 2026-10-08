@@ -47,4 +47,4 @@
 - 不猜临时会话的目录，也不给临时会话任何替代入口。
 - 不为「切会话」订阅任何事件：宿主没给这类通知，改用「进出对话界面时探测 + 点击时发现」两条兜住。
 - 不引入依赖、不加构建步骤、不新增 `shell.openExternal` / `notify` 之外的权限。
-- 不指望宿主替插件排位置：0.16.1 的 `rendererSlots` 里没有角落槽位，宿主 CSS 里那个 `.p-overlay__corner` 也没人用。要根治得让宿主提供 corner 槽位（还没提需求，见 dev-cycle 的下一步），在那之前用上面那条约定。
+- 不指望宿主替插件排位置：0.16.1 的 `rendererSlots` 里没有角落槽位，宿主 CSS 里那个 `.p-overlay__corner` 也没人用。要根治得让宿主提供 corner 槽位（已提 [vastsa/PI-Desktop#1469](https://github.com/vastsa/PI-Desktop/issues/1469)），在那之前用上面那条约定。

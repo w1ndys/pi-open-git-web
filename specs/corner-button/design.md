@@ -34,7 +34,7 @@
 - **加载时清残留层**：热重载会重新加载模块，上一轮实例开出来的层没人能关，留着就会出现在所有页面上；`onLoad` 先把 `.pogw-corner` 元素摘掉，再按当前页面决定要不要画。
 - **类名带插件前缀**：角落按钮用 `.pogw-corner` / `.pogw-corner-btn`，与 `pi-open-in-vscode` 的 `.pov-corner` 分开，避免两个插件的残留层清理互相抓。
 
-- **右下角按钮带，而不是各画各的**：宿主没有角落槽位（0.16.1 的 `rendererSlots` 只有 `userAction` / `assistantAction` / `entryExtra` / `toolCard` / `blockRenderer` / `composerControl` / `composerTrigger`；`pi.ui.openLayer()` 给每个插件一个独立的 0×0 fixed 层，`injectStyle` 又把样式 `@scope` 到本插件自己的 `data-pi-plugin` 上，宿主 CSS 里的 `.p-overlay__corner` 在 JS 里没人用）。两个插件各自 `inset:0` + `justify-content:flex-end`，必然落在同一个像素上——和 `pi-open-in-vscode` 的按钮真机重叠就是这么来的。解法是插件之间的约定：按钮带 `data-pi-corner-button` 标记，按 DOM 顺序从下往上排，靠后的按下面几颗的高度 `translateY` 让位。每颗按钮只给自己让位、不碰别家元素，两个插件各算一次结果一致；`translateY` 只改绘制，不影响别家量到的 `getBoundingClientRect().height`。**要根治还是得宿主给一个 corner 槽位**（还没提需求，见 dev-cycle 的下一步），约定只是在那之前的办法。
+- **右下角按钮带，而不是各画各的**：宿主没有角落槽位（0.16.1 的 `rendererSlots` 只有 `userAction` / `assistantAction` / `entryExtra` / `toolCard` / `blockRenderer` / `composerControl` / `composerTrigger`；`pi.ui.openLayer()` 给每个插件一个独立的 0×0 fixed 层，`injectStyle` 又把样式 `@scope` 到本插件自己的 `data-pi-plugin` 上，宿主 CSS 里的 `.p-overlay__corner` 在 JS 里没人用）。两个插件各自 `inset:0` + `justify-content:flex-end`，必然落在同一个像素上——和 `pi-open-in-vscode` 的按钮真机重叠就是这么来的。解法是插件之间的约定：按钮带 `data-pi-corner-button` 标记，按 DOM 顺序从下往上排，靠后的按下面几颗的高度 `translateY` 让位。每颗按钮只给自己让位、不碰别家元素，两个插件各算一次结果一致；`translateY` 只改绘制，不影响别家量到的 `getBoundingClientRect().height`。**要根治还是得宿主给一个 corner 槽位**（已提 [vastsa/PI-Desktop#1469](https://github.com/vastsa/PI-Desktop/issues/1469)），约定只是在那之前的办法。
 
 ## 已知限制
 
