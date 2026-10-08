@@ -3,6 +3,6 @@
   "private": true,
   "description": "PI-Desktop 插件：在浏览器打开当前仓库。",
   "scripts": {
-    "check": "node --check entity/open-result.js && node --check data/workspace.js && node --check data/git-remote.js && node --check business/open-repo.js && node --check main.js && node --check test/open-repo.test.js && node --test"
+    "check": "node --check entity/open-result.js && node --check data/workspace.js && node --check data/git-remote.js && node --check business/open-repo.js && node --check main.js && node --check renderer/styles.mjs && node --check renderer/corner.mjs && node --check renderer/corner-stack.mjs && node --check renderer/index.mjs && node --check test/open-repo.test.js && node --check test/renderer-call.test.js && node --check test/renderer.test.mjs && node --test"
   }
 }

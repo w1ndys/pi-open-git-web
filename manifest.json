@@ -2,19 +2,32 @@
   "schemaVersion": 1,
   "id": "io.github.w1ndys.pi-open-git-web",
   "name": "在浏览器打开仓库",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "w1ndys",
-  "description": "读取当前仓库的 origin，在默认浏览器打开对应网页。",
-  "changelog": "Release 0.1.0：首个版本。命令 /gitweb 读取 origin 的原始 fetch 地址，规范成 http(s) 后用默认浏览器打开。",
+  "description": "对话界面右下角一个常驻按钮，点一下就在默认浏览器打开当前仓库；命令 /gitweb 保留。按钮只在对话界面里出现，切到设置页、定时任务页、插件页会自动收起；没有工作目录，或者 origin 不能规范成 http(s) 时不显示。",
+  "changelog": "Release 0.2.0：新增对话界面右下角的常驻按钮（自绘层，renderer.extension）。渲染器不注册插槽、不依赖 react，用 MutationObserver 盯 DOM：宿主渲染出输入框（.composer-shell）且该输入框确实露在屏幕上才画按钮，切到设置页、定时任务页、插件页立刻收起。按钮出现前先探测一次 origin：只有工作目录里有能规范成 http(s) 的 origin 才显示；探测按工作目录缓存，避免每次 DOM 变动都拉起 git；点击时重新读一次 origin，保证改了 origin 立刻生效。点击打不开时先把原因留在按钮的悬停提示上，约 2.8 秒后把按钮收掉。命令 /gitweb 行为不变。Release 0.1.0：首个版本，命令 /gitweb 读取 origin 的原始 fetch 地址，规范成 http(s) 后用默认浏览器打开。",
   "license": "MIT",
   "homepage": "https://github.com/w1ndys/pi-open-git-web",
   "main": "main.js",
+  "renderer": "renderer/index.mjs",
+  "rendererActions": [
+    "plugin.call"
+  ],
+  "rendererCallMethods": [
+    "hasGitRemote",
+    "openGitWeb"
+  ],
   "permissions": [
+    "renderer.extension",
     "shell.openExternal",
     "notify"
   ],
+  "activationEvents": [
+    "onStartup",
+    "onCommand:gitweb"
+  ],
   "engines": {
-    "piDesktop": ">=0.9.0"
+    "piDesktop": ">=0.15.9"
   },
   "categories": [
     "productivity",
@@ -41,17 +54,17 @@
       }
     ]
   },
-  "safetyNotes": "只读 origin 原始地址，规范成 http(s) 后用默认浏览器打开；不读 .git 目录，不写文件，不访问网络，不读写剪贴板；用户名和口令会在打开前去掉。",
+  "safetyNotes": "做两件事：在对话界面右下角画一个常驻按钮，并保留 /gitweb 命令，两者都只读一次 remote.origin.url 的原始 fetch 地址，规范成 http(s) 后用默认浏览器打开。地址只有一条来源——当前项目根 pi.workspace.get()：拿到就打开它，拿不到（临时会话）就不显示按钮，也不做任何目录推断。按钮靠 renderer.extension：无构建 ES 模块加载进 PI-Desktop 自己的窗口，不注册任何插槽、不依赖 react，只自绘一个角落按钮；它只调插件主进程的两个方法——hasGitRemote 探测当前仓库有没有可打开的 origin（按工作目录缓存，探测不打开任何东西、不弹提示），openGitWeb 打开它——不读 .git 目录、不写文件、不访问网络、不读写剪贴板、不拼路径、不枚举目录。按钮的显示与否由模块自己盯着页面判断：宿主渲染出输入框且该输入框确实露在屏幕上时才画，离开对话界面立刻收起。用户名、口令和 token 在打开前去掉；不把 ssh 地址交给宿主。所有入口都由用户主动触发。",
   "i18n": {
     "en": {
       "name": "Open repository in browser",
-      "description": "Read the current repository origin and open the corresponding page in the default browser.",
-      "safetyNotes": "Reads only the raw origin fetch URL, normalizes it to http(s), and opens it in the default browser. It does not read the .git directory, write files, use the network, or read or write the clipboard. Usernames and passwords are removed before opening."
+      "description": "A persistent button in the bottom-right corner of the chat view opens the current repository in your default browser with one click; the /gitweb command stays. The button appears only inside the chat view and hides itself on the settings, scheduled and plugins pages; it is also hidden when there is no working directory or the origin cannot be normalized to http(s).",
+      "safetyNotes": "Does two things: draws one persistent corner button in the chat view and keeps the /gitweb command, both reading remote.origin.url once and opening the normalized http(s) address in the default browser. The directory has exactly one source - the open project root from pi.workspace.get(): when present it is opened directly, when absent (a temporary conversation) the button is not shown and no directory is ever guessed. The button comes from renderer.extension: a build-free ES module loads into PI-Desktop's own window, registers no slots, does not use react and only draws one corner button; it calls only two methods on the plugin host process - hasGitRemote to detect whether the current repository has an openable origin (cached per working directory, opening nothing and showing no toast) and openGitWeb to open it - and never reads the .git directory, writes files, uses the network, touches the clipboard, composes paths or lists directories. The module decides on its own whether to show the button: it draws it only when the host has rendered the composer and that composer is actually exposed on screen, and removes it as soon as the chat view is left. Usernames, passwords and tokens are removed before opening, and ssh addresses are never handed to the host. Every entry runs only when the user triggers it."
     },
     "zh-CN": {
       "name": "在浏览器打开仓库",
-      "description": "读取当前仓库的 origin，在默认浏览器打开对应网页。",
-      "safetyNotes": "只读 origin 原始地址，规范成 http(s) 后用默认浏览器打开；不读 .git 目录，不写文件，不访问网络，不读写剪贴板；用户名和口令会在打开前去掉。"
+      "description": "对话界面右下角一个常驻按钮，点一下就在默认浏览器打开当前仓库；命令 /gitweb 保留。按钮只在对话界面里出现，切到设置页、定时任务页、插件页会自动收起；没有工作目录，或者 origin 不能规范成 http(s) 时不显示。",
+      "safetyNotes": "做两件事：在对话界面右下角画一个常驻按钮，并保留 /gitweb 命令，两者都只读一次 remote.origin.url 的原始 fetch 地址，规范成 http(s) 后用默认浏览器打开。地址只有一条来源——当前项目根 pi.workspace.get()：拿到就打开它，拿不到（临时会话）就不显示按钮，也不做任何目录推断。按钮靠 renderer.extension：无构建 ES 模块加载进 PI-Desktop 自己的窗口，不注册任何插槽、不依赖 react，只自绘一个角落按钮；它只调插件主进程的两个方法——hasGitRemote 探测当前仓库有没有可打开的 origin（按工作目录缓存，探测不打开任何东西、不弹提示），openGitWeb 打开它——不读 .git 目录、不写文件、不访问网络、不读写剪贴板、不拼路径、不枚举目录。按钮的显示与否由模块自己盯着页面判断：宿主渲染出输入框且该输入框确实露在屏幕上时才画，离开对话界面立刻收起。用户名、口令和 token 在打开前去掉；不把 ssh 地址交给宿主。所有入口都由用户主动触发。"
     }
   }
 }
